@@ -26,6 +26,7 @@ export default function Datasets() {
     actions: dataset, // Pass full dataset name for actions
   }));
 
+
   const columns: TableColumn[] = [
     {
       title: (
@@ -34,7 +35,7 @@ export default function Datasets() {
           checked={selectedDatasets.length === datasets.length && datasets.length > 0}
           onChange={handleSelectAll}
         />
-      ),
+      ) as unknown as string,
       key: 'select',
       className: 'w-6 text-left',
       render: row => (
