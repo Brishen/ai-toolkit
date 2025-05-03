@@ -11,6 +11,8 @@ interface DatasetImageCardProps {
   children?: ReactNode;
   className?: string;
   onDelete?: () => void;
+  selected?: boolean;
+  onSelect?: (selected: boolean) => void;
 }
 
 const DatasetImageCard: React.FC<DatasetImageCardProps> = ({
@@ -19,6 +21,8 @@ const DatasetImageCard: React.FC<DatasetImageCardProps> = ({
   children,
   className = '',
   onDelete = () => {},
+  selected = false,
+  onSelect = () => {},
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -160,6 +164,17 @@ const DatasetImageCard: React.FC<DatasetImageCardProps> = ({
           )}
           {children && <div className="absolute inset-0 flex items-center justify-center">{children}</div>}
           <div className="absolute top-1 right-1 flex space-x-2">
+            <button
+              className={`bg-gray-800 rounded-full p-2 ${selected ? 'bg-blue-600' : ''}`}
+              onClick={() => onSelect(!selected)}
+            >
+              <input 
+                type="checkbox" 
+                checked={selected} 
+                onChange={() => {}} 
+                className="pointer-events-none"
+              />
+            </button>
             
             <button
               className="bg-gray-800 rounded-full p-2"
