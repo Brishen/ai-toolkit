@@ -64,15 +64,16 @@ export default function Datasets() {
 
   const columns: TableColumn[] = [
     {
-      title: (
+      title: '',
+      key: 'select',
+      className: 'w-6 text-left',
+      renderHeader: () => (
         <input
           type="checkbox"
           checked={selectedDatasets.length === datasets.length && datasets.length > 0}
           onChange={handleSelectAll}
         />
       ),
-      key: 'select',
-      className: 'w-6 text-left',
       render: row => (
         <input
           type="checkbox"
