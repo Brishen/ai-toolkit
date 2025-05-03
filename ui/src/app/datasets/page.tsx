@@ -25,6 +25,41 @@ export default function Datasets() {
     name: dataset,
     actions: dataset, // Pass full dataset name for actions
   }));
+  const handleDeleteDataset = (datasetName: string) => {
+    openConfirm({
+      title: 'Delete Dataset',
+      message: `Are you sure you want to delete the dataset "${datasetName}"? This action cannot be undone.`,
+      type: 'warning',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        apiClient
+          .post('/api/datasets/delete', { name: datasetName })
+          .then(() => {
+            console.log('Dataset deleted:', datasetName);
+            refreshDatasets();
+          })
+          .catch(error => {
+            console.error('Error deleting dataset:', error);
+          });
+      },
+    });
+  };
+  
+  const handleSelectDataset = (e: React.ChangeEvent<HTMLInputElement>, datasetName: string) => {
+    if (e.target.checked) {
+      setSelectedDatasets(prev => [...prev, datasetName]);
+    } else {
+      setSelectedDatasets(prev => prev.filter(name => name !== datasetName));
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedDatasets(datasets);
+    } else {
+      setSelectedDatasets([]);
+    }
+  };
 
 
   const columns: TableColumn[] = [
@@ -70,41 +105,6 @@ export default function Datasets() {
     },
   ];
 
-  const handleDeleteDataset = (datasetName: string) => {
-    openConfirm({
-      title: 'Delete Dataset',
-      message: `Are you sure you want to delete the dataset "${datasetName}"? This action cannot be undone.`,
-      type: 'warning',
-      confirmText: 'Delete',
-      onConfirm: () => {
-        apiClient
-          .post('/api/datasets/delete', { name: datasetName })
-          .then(() => {
-            console.log('Dataset deleted:', datasetName);
-            refreshDatasets();
-          })
-          .catch(error => {
-            console.error('Error deleting dataset:', error);
-          });
-      },
-    });
-  };
-  
-  const handleSelectDataset = (e: React.ChangeEvent<HTMLInputElement>, datasetName: string) => {
-    if (e.target.checked) {
-      setSelectedDatasets(prev => [...prev, datasetName]);
-    } else {
-      setSelectedDatasets(prev => prev.filter(name => name !== datasetName));
-    }
-  };
-
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setSelectedDatasets(datasets);
-    } else {
-      setSelectedDatasets([]);
-    }
-  };
 
   const handleDeleteSelectedDatasets = () => {
     openConfirm({
