@@ -5,6 +5,7 @@ export interface TableColumn {
   title: string;
   key: string;
   render?: (row: any) => React.ReactNode;
+  renderHeader?: () => React.ReactNode;
   className?: string;
 }
 
@@ -43,7 +44,7 @@ export default function UniversalTable({ columns, rows, isLoading, onRefresh = (
               <tr>
                 {columns.map(column => (
                   <th key={column.key} className="px-3 py-2">
-                    {column.title}
+                    {column.renderHeader ? column.renderHeader() : column.title}
                   </th>
                 ))}
               </tr>
