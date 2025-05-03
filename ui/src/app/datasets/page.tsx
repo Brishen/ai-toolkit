@@ -17,6 +17,7 @@ export default function Datasets() {
   const router = useRouter();
   const { datasets, status, refreshDatasets } = useDatasetList();
   const [newDatasetName, setNewDatasetName] = useState('');
+  const [selectedDatasets, setSelectedDatasets] = useState<string[]>([]);
   const [isNewDatasetModalOpen, setIsNewDatasetModalOpen] = useState(false);
 
   // Transform datasets array into rows with objects
@@ -26,6 +27,24 @@ export default function Datasets() {
   }));
 
   const columns: TableColumn[] = [
+    {
+      title: (
+        <input
+          type="checkbox"
+          checked={selectedDatasets.length === datasets.length && datasets.length > 0}
+          onChange={handleSelectAll}
+        />
+      ),
+      key: 'select',
+      className: 'w-6 text-left',
+      render: row => (
+        <input
+          type="checkbox"
+          checked={selectedDatasets.includes(row.name)}
+          onChange={(e) => handleSelectDataset(e, row.name)}
+        />
+      ),
+    },
     {
       title: 'Dataset Name',
       key: 'name',
@@ -65,6 +84,46 @@ export default function Datasets() {
           })
           .catch(error => {
             console.error('Error deleting dataset:', error);
+          });
+      },
+    });
+  };
+  
+  const handleSelectDataset = (e: React.ChangeEvent<HTMLInputElement>, datasetName: string) => {
+    if (e.target.checked) {
+      setSelectedDatasets(prev => [...prev, datasetName]);
+    } else {
+      setSelectedDatasets(prev => prev.filter(name => name !== datasetName));
+    }
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedDatasets(datasets);
+    } else {
+      setSelectedDatasets([]);
+    }
+  };
+
+  const handleDeleteSelectedDatasets = () => {
+    openConfirm({
+      title: 'Delete Selected Datasets',
+      message: `Are you sure you want to delete ${selectedDatasets.length} datasets? This action cannot be undone.`,
+      type: 'warning',
+      confirmText: 'Delete',
+      onConfirm: () => {
+        Promise.all(
+          selectedDatasets.map(name =>
+            apiClient.post('/api/datasets/delete', { name })
+          )
+        )
+          .then(() => {
+            console.log('Datasets deleted:', selectedDatasets);
+            refreshDatasets();
+            setSelectedDatasets([]);
+          })
+          .catch(error => {
+            console.error('Error deleting datasets:', error);
           });
       },
     });
@@ -117,6 +176,16 @@ export default function Datasets() {
           <h1 className="text-2xl font-semibold text-gray-100">Datasets</h1>
         </div>
         <div className="flex-1"></div>
+        {selectedDatasets.length > 0 && (
+          <div className="mr-2">
+            <Button
+              className="text-gray-200 bg-red-600 px-4 py-2 rounded-md hover:bg-red-500 transition-colors"
+              onClick={handleDeleteSelectedDatasets}
+            >
+              Delete Selected ({selectedDatasets.length})
+            </Button>
+          </div>
+        )}
         <div>
           <Button
             className="text-gray-200 bg-slate-600 px-4 py-2 rounded-md hover:bg-slate-500 transition-colors"
