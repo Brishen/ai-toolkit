@@ -185,6 +185,15 @@ export default function SimpleJob({
                 required
               />
             )}
+            <TextInput
+              label="Ignore Layers"
+              value={jobConfig.config.process[0].network.network_kwargs.ignore_if_contains.join(', ')}
+              onChange={value => {
+                const layers = value.split(',').map(layer => layer.trim()).filter(layer => layer);
+                setJobConfig(layers, 'config.process[0].network.network_kwargs.ignore_if_contains');
+              }}
+              placeholder="Enter layers to ignore, comma separated"
+            />
           </Card>
           <Card title="Save Configuration">
             <SelectInput
