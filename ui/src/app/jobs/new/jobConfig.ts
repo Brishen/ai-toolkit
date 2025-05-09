@@ -33,7 +33,7 @@ export const defaultJobConfig: JobConfig = {
           lokr_full_rank: true,
           lokr_factor: -1,
           network_kwargs: {
-            ignore_if_contains: [],
+            ignore_if_contains: ["transformer.double_blocks.0", "final_layer"],
           },
         },
         save: {
