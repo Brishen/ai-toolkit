@@ -364,7 +364,7 @@ export default function SimpleJob({
                 <TextInput
                   label="DFE Preservation Class"
                   className="pt-2"
-                  value={jobConfig.config.process[0].train.diff_output_preservation_class as string}
+                  value={jobConfig.config.process[0].train.diff_output_preservation_class || ''}
                   onChange={value => setJobConfig(value, 'config.process[0].train.diff_output_preservation_class')}
                   placeholder="eg. woman"
                 />
