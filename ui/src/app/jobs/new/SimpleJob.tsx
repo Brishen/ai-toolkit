@@ -10,7 +10,7 @@ import { X } from 'lucide-react';
 
 type Props = {
   jobConfig: JobConfig;
-  setJobConfig: (value: any, key: string) => void;
+  setJobConfig: (value: any, key?: string) => void;
   status: 'idle' | 'saving' | 'success' | 'error';
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   runId: string | null;
@@ -187,7 +187,7 @@ export default function SimpleJob({
             )}
             <TextInput
               label="Ignore Layers"
-              value={jobConfig.config.process[0].network?.network_kwargs.ignore_if_contains.join(', ') as string}
+              value={(jobConfig.config.process[0].network?.network_kwargs.ignore_if_contains || []).join(', ')}
               onChange={value => {
                 const layers = value.split(',').map(layer => layer.trim()).filter(layer => layer);
                 setJobConfig(layers, 'config.process[0].network.network_kwargs.ignore_if_contains');
