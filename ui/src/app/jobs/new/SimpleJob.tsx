@@ -187,7 +187,7 @@ export default function SimpleJob({
             )}
             <TextInput
               label="Ignore Layers"
-              value={jobConfig.config.process[0].network?.network_kwargs.ignore_if_contains.join(', ')}
+              value={jobConfig.config.process[0].network?.network_kwargs.ignore_if_contains.join(', ') as string}
               onChange={value => {
                 const layers = value.split(',').map(layer => layer.trim()).filter(layer => layer);
                 setJobConfig(layers, 'config.process[0].network.network_kwargs.ignore_if_contains');
