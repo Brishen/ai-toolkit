@@ -1763,6 +1763,15 @@ class StableDiffusion:
         )
         noise = apply_noise_offset(noise, noise_offset)
         return noise
+    
+    def get_latent_noise_from_latents(
+        self,
+        latents: torch.Tensor,
+        noise_offset=0.0
+    ):
+        noise = torch.randn_like(latents)
+        noise = apply_noise_offset(noise, noise_offset)
+        return noise
 
     def get_time_ids_from_latents(self, latents: torch.Tensor, requires_aesthetic_score=False):
         VAE_SCALE_FACTOR = 2 ** (len(self.vae.config['block_out_channels']) - 1)
@@ -2529,8 +2538,8 @@ class StableDiffusion:
 
         # Move to vae to device if on cpu
         if self.vae.device == 'cpu':
-            self.vae.to(self.device)
-        latents = latents.to(device, dtype=dtype)
+            self.vae.to(self.device_torch)
+        latents = latents.to(self.device_torch, dtype=self.torch_dtype)
         latents = (latents / self.vae.config['scaling_factor']) + self.vae.config['shift_factor']
         images = self.vae.decode(latents).sample
         images = images.to(device, dtype=dtype)
